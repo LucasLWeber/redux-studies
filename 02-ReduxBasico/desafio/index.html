@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Challange - Redux</title>
+    <script src="../immer.umd.production.min.js"></script>
+    <script src="https://unpkg.com/redux@4.2.1/dist/redux.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="table-responsive w-50 m-auto">
+      <table class="table table-striped table-hover table-bordered table-sm">
+        <thead class="table-dark">
+          <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Tempo restante</th>
+            <th>Aulas completas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="name"></td>
+            <td id="email"></td>
+            <td id="time-remaining"></td>
+            <td id="completed-classes"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script type="module">
+      import store from "./configureStore.js";
+      import {
+        timeIncrement,
+        timeDecrement,
+        emailModify,
+      } from "./reducers/aluno.js";
+      import {
+        completeClass,
+        completeCourse,
+        resetCourse,
+      } from "./reducers/aula.js";
+
+      store.subscribe(render);
+      render();
+
+      store.dispatch(timeIncrement());
+      store.dispatch(timeDecrement());
+      store.dispatch(emailModify("lucasweber.dev@outlook.com"));
+      store.dispatch(completeClass(2));
+      store.dispatch(completeCourse());
+      store.dispatch(resetCourse());
+
+      function render() {
+        document.getElementById("name").innerText = store.getState().aluno.name;
+        document.getElementById("email").innerText =
+          store.getState().aluno.email;
+        document.getElementById("time-remaining").innerText =
+          store.getState().aluno.remainingDays;
+        document.getElementById("completed-classes").innerText = store
+          .getState()
+          .aula.reduce((acc, aula) => {
+            return aula.completed ? acc + 1 : acc;
+          }, 0);
+      }
+    </script>
+  </body>
+</html>
