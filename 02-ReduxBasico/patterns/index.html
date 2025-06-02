@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patterns - Redux</title>
+    <script src="../immer.umd.production.min.js"></script>
+		<script src="https://unpkg.com/redux@4.2.1/dist/redux.min.js"></script>
+  </head>
+  <body>
+		<script type="module">
+			import store from './configureStore.js';
+			import { increment } from './reducers/count.js';
+
+			store.dispatch(increment());
+		</script>
+	</body>
+</html>
