@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redux Vanilla</title>
+    <script src="https://unpkg.com/redux@4.2.1/dist/redux.min.js"></script>
+  </head>
+
+  <body>
+    <p>Value:<span id="balance"></span></p>
+    <button id="btn-increment">Increment</button>
+    <button id="btn-decrement">Decrement</button>
+
+    <button id="btn-open">Open</button>
+    <button id="btn-close">Close</button>
+
+    <script>
+      const [INCREMENT, DECREMENT, SUM] = ["INCREMENT", "DECREMENT", "SUM"];
+      const [OPEN, CLOSE] = ["OPEN", "CLOSE"];
+
+      const initialState = {
+        id: Math.floor(Math.random() * 100 + 1),
+        name: "Lucas Weber AKA pai da Sara",
+        balance: 1,
+      };
+      // Reducer contador
+      function count(state = initialState, action) {
+        return {
+          ...state,
+          balance:
+            action.type === INCREMENT
+              ? state.balance + 1
+              : action.type === DECREMENT
+              ? state.balance - 1
+              : action.type === SUM
+              ? state.balance + action.payload
+              : state.balance,
+        };
+      }
+
+      function modal(state = false, action) {
+        return action.type === OPEN
+          ? true
+          : action.type === CLOSE
+          ? false
+          : state;
+      }
+
+      // implementar Action Creators
+      const increment = () => {
+        return { type: INCREMENT };
+      };
+
+      const decrement = () => {
+        return { type: DECREMENT };
+      };
+
+      const sum = (payload) => {
+        return { type: SUM, payload };
+      };
+
+      const reducer = Redux.combineReducers({ count, modal });
+      const store = Redux.createStore(reducer);
+      render();
+      // Para modificar um estado diretamente -> Faz-se via dispatch
+      // store.dispatch(increment());
+
+      // retorno para dois objetos conforme a combincação dos reducers
+      console.log(store.getState());
+
+      // Atualização de estado via subscribe
+      store.subscribe(render);
+      store.dispatch(sum(10));
+
+      document.getElementById("btn-increment").addEventListener("click", () => {
+        store.dispatch(increment());
+      });
+
+      document.getElementById("btn-decrement").addEventListener("click", () => {
+        store.dispatch(decrement());
+      });
+
+      document.getElementById("btn-open").addEventListener("click", () => {
+        store.dispatch({ type: OPEN });
+      });
+
+      document.getElementById("btn-close").addEventListener("click", () => {
+        store.dispatch({ type: CLOSE });
+      });
+
+      function render() {
+        const { count, modal } = store.getState();
+        document.getElementById("balance").innerText = count.balance;
+        console.log(count, modal);
+        modal
+          ? (document.getElementById("balance").style.display = "inline-block")
+          : (document.getElementById("balance").style.display = "none");
+      }
+    </script>
+  </body>
+</html>

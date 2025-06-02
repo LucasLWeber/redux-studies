@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pure Functions - Redux</title>
+    <script src="https://unpkg.com/redux@4.2.1/dist/redux.min.js"></script>
+  </head>
+  <body>
+    <div id="box" style="background: #123456; height: 50px;"></div>
+    <script>
+      // maneira errada -> não é um fn pura pois tem efeito colateral
+			// desta maneira o tracking via redux devtools fica comprometido
+			// o dom não é atualizado corretamente conforme a modificação do estado
+      function reducer(state = 0, action) {
+        switch (action.type) {
+          case "MODIFY":
+            // document.getElementById("box").style.width = action.payload + "px";
+            return action.payload;
+          default:
+            return state;
+        }
+      }
+
+      function render() {
+        document.getElementById("box").style.width = store.getState() + "px";
+      }
+
+      const store = Redux.createStore(
+        reducer,
+        window.__REDUX_DEVTOOLS_EXTENSION__ &&
+          window.__REDUX_DEVTOOLS_EXTENSION__()
+      );
+      store.subscribe(render);
+      store.dispatch({ type: "MODIFY", payload: 100 });
+      store.dispatch({ type: "MODIFY", payload: 12 });
+      store.dispatch({ type: "MODIFY", payload: 40 });
+      store.dispatch({ type: "MODIFY", payload: 78 });
+
+      console.log(store.getState());
+    </script>
+  </body>
+</html>

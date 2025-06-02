@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Imutability - Redux</title>
+    <script src="./immer.umd.production.min.js"></script>
+    <script src="https://unpkg.com/redux@4.2.1/dist/redux.min.js"></script>
+  </head>
+  <body>
+    <script>
+      // Imutabilidade -> A função reducer nunca deve modificar o estado atual
+      // sempre deve retornar um estado novo
+
+      [CHANGE_NAME] = ["CHANGE_NAME"];
+
+      const initialState = {
+        id: 1,
+        name: "Lucas",
+      };
+
+      // Immer para a produção de novos objetos
+
+      const newInitialState = immer.produce(initialState, (draft) => {
+        (draft.id = 2), (draft.name = "Isabel");
+      });
+
+      console.log(newInitialState);
+
+      const nativeReducer = (state = initialState, action) => {
+        if (action.type === CHANGE_NAME)
+          return {
+            ...state,
+            name: action.payload,
+          };
+
+        return state;
+      };
+
+      // Immer automaticamente gera novo objeto preservando o conceito de imutabilidade
+			// Não é necessário retornar o state -> é automaticamente retornado pelo immer
+      const immerReducer = immer.produce((state, action) => {
+        if (action.type === CHANGE_NAME) state.name = action.payload;
+      }, initialState);
+
+      const store = Redux.createStore(
+        immerReducer,
+        window.__REDUX_DEVTOOLS_EXTENSION__ &&
+          window.__REDUX_DEVTOOLS_EXTENSION__()
+      );
+
+      store.dispatch({ type: CHANGE_NAME, payload: "Lucas Weber" });
+      store.dispatch({ type: CHANGE_NAME, payload: "Lucas Lazzaretti Weber" });
+    </script>
+  </body>
+</html>
