@@ -1,17 +1,7 @@
-import { configureStore, createAction } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import count from "./count";
+import modal from "./modal";
 
-// Usando create action
-export const increment = createAction("INCREMENT");
-export const decrement = createAction("DECREMENT");
-
-const reducer = (state = 0, action) => {
-  return action.type === increment.type
-    ? state + 1
-    : action.type === decrement.type
-    ? state - 1
-    : state;
-};
-
+const reducer = combineReducers({ count, modal });
 const store = configureStore({ reducer });
-
 export default store;
